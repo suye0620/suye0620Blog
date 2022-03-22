@@ -1,0 +1,596 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Ye.S">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="关于神经网络模型构造的一点思考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="what is nn?">
+<meta property="og:url" content="http://example.com/2022/03/22/what-is-nn/index.html">
+<meta property="og:site_name" content="Ye.S-HomePage">
+<meta property="og:description" content="关于神经网络模型构造的一点思考">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/MathAboutNN/cover.jpg">
+<meta property="article:published_time" content="2022-03-22T02:31:02.000Z">
+<meta property="article:modified_time" content="2022-03-22T03:02:31.514Z">
+<meta property="article:author" content="Ye.S">
+<meta property="article:tag" content="Math">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/MathAboutNN/cover.jpg">
+  
+  
+  <title>what is nn? - Ye.S-HomePage</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Ye.S</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="what is nn?">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-22 10:31" pubdate>
+        2022年3月22日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">what is nn?</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言">前言</h2>
+<p><span class="math inline">\(\quad\)</span>这篇blog的题目是What is NN? 很浮夸，是吧。一篇文章怎么能说清NN？(因为我也没打算说清楚，哈哈。)不过，NN是一个神奇的东西，它极具魅力，吸引着当下百分之九十的数据科学家和数据分析爱好者(包括我在内)。无论是写论文还是做项目，若不言NN，很容易被许多伪数据科学爱好者嗤之以鼻。因此，在现实的需求和洪流面前，我又不得不去看它。</p>
+<p><span class="math inline">\(\quad\)</span>从大二寒假开始，我就一直在看NN。无奈当时太年轻(当然现在依旧是，哈哈)，找到了邱锡鹏的《nndl-book》就开始大读特读。读了20多页，全是：</p>
+<center>
+<p><img src="/img/MathAboutNN/nike.jpg" srcset="/img/loading.gif" lazyload width="400" /></p>
+</center>
+<p><span class="math inline">\(\quad\)</span>但现在，学了《机器学习》《回归分析》《多元统计分析》等专业课，被统计专业一群大佬老师熏陶了这么久。我感觉初窥了NN的门径，有必要写点什么记录一下近期的思考。题目很大，就叫《What is NN?》，哈哈。</p>
+<h2 id="nn">NN</h2>
+<p><span class="math inline">\(\quad\)</span>如果你问我，你觉得机器学习是什么？我可能会回答："机器学习就是函数逼近。"邱锡鹏在《nndl-book》这本书里阐述道："通俗地讲，机器学习（Machine Learning，ML）就是让计算机从数据中进行自动学习，得到某种知识（或规律）。"在我看来，这种知识或者规律，其最直观的体现就是我们通过数据训练出来的映射函数<span class="math inline">\(y(label) = f(X)\)</span>。</p>
+<p><span class="math inline">\(\quad\)</span>邱在《nndl-book》的第二章阐述了机器学习方法的三个基本要素：模型、学习准则、优化算法。NN作为一种现代的机器学习方法，自然也逃不开这个研究的基本范式。本文将主要关注NN的模型构造和理解，如若对后两者感兴趣请参阅邱锡鹏《神经网络与深度学习》。</p>
+<h2 id="定义">定义</h2>
+<p><span class="math inline">\(\quad\)</span>前馈神经网络(or多层感知机)是最早发明的人工神经网络，也是我们理解NN的基础。</p>
+<center>
+<p><img src="/img/MathAboutNN/cover.jpg" srcset="/img/loading.gif" lazyload alt="前馈神经网络" /></p>
+</center>
+<p><span class="math inline">\(\quad\)</span>上图给出了一个前馈神经网络的示例。另外，我们再定义一些描述前馈神经网络的记号。</p>
+<table>
+<caption>前馈神经网络的记号</caption>
+<thead>
+<tr class="header">
+<th>记号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(L\)</span></td>
+<td>神经网络的层数</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(M_l\)</span></td>
+<td>第<span class="math inline">\(l\)</span>层神经元的个数</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(f_l(·)\)</span></td>
+<td>第<span class="math inline">\(l\)</span>层神经元的激活函数</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(W^{(l)} \in \mathbb{R}^{M_l \times M_{l-1}}\)</span></td>
+<td>第<span class="math inline">\(𝑙 − 1\)</span>层到第<span class="math inline">\(l\)</span>层的权重矩阵</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(b^{(l)} \in \mathbb{R}^{M_l}\)</span></td>
+<td>第<span class="math inline">\(𝑙 − 1\)</span>层到第<span class="math inline">\(l\)</span>层的偏置</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(z^{(l)} \in \mathbb{R}^{M_l}\)</span></td>
+<td>第<span class="math inline">\(l\)</span>层神经元的净输入(净活性值)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(a^{(l)} \in \mathbb{R}^{M_l}\)</span></td>
+<td>第<span class="math inline">\(l\)</span>层神经元的输出(活性值)</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(\quad\)</span>令<span class="math inline">\({a}^{(0)} = {x},\quad(a,x \quad are \quad vectors)\)</span>，前馈神经网络通过不断迭代下面公式进行信息传播：</p>
+<p><span class="math display">\[
+\begin{align*}
+\begin{cases}
+z^{(l)} &amp;= W^{(l)} {a}^{(l-1)} + b^{(l)} \\
+{a}^{(l)} &amp;= f_l(z^{(l)})
+\end{cases}
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(\quad\)</span>即首先根据第<span class="math inline">\(l-1\)</span>层Neuron的活性值(Activation,就是经过<span class="math inline">\(l-1\)</span>层的激活函数激活后的值)<span class="math inline">\(a^{(l-1)}\)</span>计算出第<span class="math inline">\(l\)</span>层Neuron的净活性值<span class="math inline">\(z^{(l)}\)</span>。然后经过一个激活函数(实则就是sigmoid/ReLu等非线性变换)得到第<span class="math inline">\(l\)</span>层神经元的活性值。</p>
+<p><span class="math inline">\(\quad\)</span>因此，我们也可以将每个神经层看作一个仿射变换(通过一个线性变换和平移/偏置)和一个非线性变换。</p>
+<p><span class="math inline">\(\quad\)</span>我们可以将上面的公式改写成：</p>
+<p><span class="math display">\[
+\begin{align*}
+\begin{cases}
+活性值版：&amp; a^{(l)}&amp;=f_l(W^{(l)} {a}^{(l-1)} + b^{(l)})\\
+净活性值版：&amp; z^{(l)}&amp;=W^{(l)}f_{l-1}(z^{(l-1)})+b^{(l)}
+\end{cases}
+\end{align*}
+\]</span></p>
+<h2 id="解读">解读</h2>
+<h3 id="q1nn示意图中圆圈的含义是">Q1:NN示意图中圆圈的含义是？</h3>
+<p><span class="math inline">\(\quad\)</span>我的理解是它们象征着净输入的各个分量或者说维度。一个圆圈代表该层输入的一个维度。</p>
+<h3 id="q2nn示意图中连线的含义是">Q2:NN示意图中连线的含义是？</h3>
+<p><span class="math inline">\(\quad\)</span>类比<strong>多因变量对多自变量的回归</strong>，单条连线指净输入某一维度/分量到下一层输入某一维度的变换。我们用<span class="math inline">\(\overrightarrow{x} = (x_1,x_2,\cdots,x_3)\)</span>表示某一层的净输入的话，再用<span class="math inline">\(\overrightarrow{y}_{(i)},w^T_{(i)},\overrightarrow{b}_{(i)}\)</span>分别表示该层变换输出(下一层输入)的第<span class="math inline">\(i\)</span>个维度、该层变换变换的权重矩阵第<span class="math inline">\(i\)</span>行、该层变换的偏置向量的第<span class="math inline">\(i\)</span>个分量，忽略非线性变换的步骤(毕竟只是一个外壳)，则单条连线象征的变换可表示为：</p>
+<p><span class="math display">\[
+\overrightarrow{y}_{(i)}=w^T_{(i)} \overrightarrow{x}+\overrightarrow{b}_{(i)}
+\]</span></p>
+<p><span class="math inline">\(\quad\)</span>在一本介绍PyTorch的书中，我看到了一些有趣的观点。</p>
+<h3 id="q3仿射变换">Q3:仿射变换</h3>
+<p><span class="math inline">\(\quad\)</span>深度学习的核心组件之一是仿射变换，仿射变换是一个关于矩阵<span class="math inline">\(A\)</span>和向量<span class="math inline">\(x,b\)</span>的<span class="math inline">\(f(x)\)</span>函数：</p>
+<p><span class="math display">\[
+f(x) = Ax+b
+\]</span></p>
+<p><span class="math inline">\(\quad\)</span>在大部分书中，我们都能看到神经网络一层中的仿射变换变换被表示成了：</p>
+<p><span class="math display">\[
+W^{(l)}a^{(l-1)}+b^{(l)}
+\]</span></p>
+<p><span class="math inline">\(\quad\)</span>实际上，可以写的“统计学”一些：</p>
+<p><span class="math display">\[
+\begin{align*}
+a^{(l-1)}B^{(l)}+b^{(l)}
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(\quad\)</span>这样做的好处就是可以更好理解为什么PyTorch在定义网络时，各层维度数字是首尾相连的。</p>
+<h3 id="q4非线性变换">Q4:非线性变换</h3>
+<p><span class="math inline">\(\quad\)</span>首先，注意以下这个例子，它将解释为什么我们一层NN需要非线性函数。假设我们有两个仿射变换<span class="math inline">\(f(x) = Ax+b\)</span> 和<span class="math inline">\(g(x) = Cx+d\)</span>。那么<span class="math inline">\(f(g(x))\)</span> 又是什么呢？</p>
+<p><span class="math display">\[
+\begin{align*}
+f(g(x)) &amp;= A(Cx+d)+b \\
+&amp;= ACx + (Ad+b)
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(\quad AC\)</span>是一个矩阵，<span class="math inline">\(Ad+b\)</span>是一个向量，可以看出，两个仿射变换的组合还是一个仿射变换。由此可以看出，使用以上方法将多个仿射变换组合成的长链式的神经网络，相对于单个仿射变换并没有性能上的提升。但是如果我们在两个仿射变换之间引入非线性，那么结果就大不一样了，我们可以构建出一个高性能的模型。</p>
+<p><span class="math inline">\(\quad\)</span>最常用的核心的非线性函数有：<span class="math inline">\(tanh(x),\sigma(x),ReLU(x)\)</span>。你可能会想： “为什么是这些函数？明明有其他更多的非线性函数。”这些函数常用的原因是它们拥有可以容易计算的梯度，而<strong>计算梯度是学习的本质</strong>。例如:</p>
+<p><span class="math display">\[
+\frac{d\sigma}{dx} = \sigma(x)(1-\sigma(x))
+\]</span></p>
+<p>虽然<span class="math inline">\(\sigma(x)\)</span>是非线性的，但是当参数的绝对值增长时，它的梯度会很快消失。而小梯度意味着很难学习。因此大部分人默认选择<span class="math inline">\(tanh\)</span>或者<span class="math inline">\(ReLU\)</span>。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Article/">Article</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Math/">Math</a>
+                    
+                      <a class="hover-with-bg" href="/tags/DeepLearning/">DeepLearning</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

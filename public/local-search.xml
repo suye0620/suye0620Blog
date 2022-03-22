@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>what is nn?</title>
+    <link href="/2022/03/22/what-is-nn/"/>
+    <url>/2022/03/22/what-is-nn/</url>
+    
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><span class="math inline">\(\quad\)</span>这篇blog的题目是What is NN? 很浮夸，是吧。一篇文章怎么能说清NN？(因为我也没打算说清楚，哈哈。)不过，NN是一个神奇的东西，它极具魅力，吸引着当下百分之九十的数据科学家和数据分析爱好者(包括我在内)。无论是写论文还是做项目，若不言NN，很容易被许多伪数据科学爱好者嗤之以鼻。因此，在现实的需求和洪流面前，我又不得不去看它。</p><p><span class="math inline">\(\quad\)</span>从大二寒假开始，我就一直在看NN。无奈当时太年轻(当然现在依旧是，哈哈)，找到了邱锡鹏的《nndl-book》就开始大读特读。读了20多页，全是：</p><center><p><img src="/img/MathAboutNN/nike.jpg" width="400" /></p></center><p><span class="math inline">\(\quad\)</span>但现在，学了《机器学习》《回归分析》《多元统计分析》等专业课，被统计专业一群大佬老师熏陶了这么久。我感觉初窥了NN的门径，有必要写点什么记录一下近期的思考。题目很大，就叫《What is NN?》，哈哈。</p><h2 id="nn">NN</h2><p><span class="math inline">\(\quad\)</span>如果你问我，你觉得机器学习是什么？我可能会回答："机器学习就是函数逼近。"邱锡鹏在《nndl-book》这本书里阐述道："通俗地讲，机器学习（Machine Learning，ML）就是让计算机从数据中进行自动学习，得到某种知识（或规律）。"在我看来，这种知识或者规律，其最直观的体现就是我们通过数据训练出来的映射函数<span class="math inline">\(y(label) = f(X)\)</span>。</p><p><span class="math inline">\(\quad\)</span>邱在《nndl-book》的第二章阐述了机器学习方法的三个基本要素：模型、学习准则、优化算法。NN作为一种现代的机器学习方法，自然也逃不开这个研究的基本范式。本文将主要关注NN的模型构造和理解，如若对后两者感兴趣请参阅邱锡鹏《神经网络与深度学习》。</p><h2 id="定义">定义</h2><p><span class="math inline">\(\quad\)</span>前馈神经网络(or多层感知机)是最早发明的人工神经网络，也是我们理解NN的基础。</p><center><p><img src="/img/MathAboutNN/cover.jpg" alt="前馈神经网络" /></p></center><p><span class="math inline">\(\quad\)</span>上图给出了一个前馈神经网络的示例。另外，我们再定义一些描述前馈神经网络的记号。</p><table><caption>前馈神经网络的记号</caption><thead><tr class="header"><th>记号</th><th>含义</th></tr></thead><tbody><tr class="odd"><td><span class="math inline">\(L\)</span></td><td>神经网络的层数</td></tr><tr class="even"><td><span class="math inline">\(M_l\)</span></td><td>第<span class="math inline">\(l\)</span>层神经元的个数</td></tr><tr class="odd"><td><span class="math inline">\(f_l(·)\)</span></td><td>第<span class="math inline">\(l\)</span>层神经元的激活函数</td></tr><tr class="even"><td><span class="math inline">\(W^{(l)} \in \mathbb{R}^{M_l \times M_{l-1}}\)</span></td><td>第<span class="math inline">\(𝑙 − 1\)</span>层到第<span class="math inline">\(l\)</span>层的权重矩阵</td></tr><tr class="odd"><td><span class="math inline">\(b^{(l)} \in \mathbb{R}^{M_l}\)</span></td><td>第<span class="math inline">\(𝑙 − 1\)</span>层到第<span class="math inline">\(l\)</span>层的偏置</td></tr><tr class="even"><td><span class="math inline">\(z^{(l)} \in \mathbb{R}^{M_l}\)</span></td><td>第<span class="math inline">\(l\)</span>层神经元的净输入(净活性值)</td></tr><tr class="odd"><td><span class="math inline">\(a^{(l)} \in \mathbb{R}^{M_l}\)</span></td><td>第<span class="math inline">\(l\)</span>层神经元的输出(活性值)</td></tr></tbody></table><p><span class="math inline">\(\quad\)</span>令<span class="math inline">\({a}^{(0)} = {x},\quad(a,x \quad are \quad vectors)\)</span>，前馈神经网络通过不断迭代下面公式进行信息传播：</p><p><span class="math display">\[\begin{align*}\begin{cases}z^{(l)} &amp;= W^{(l)} {a}^{(l-1)} + b^{(l)} \\{a}^{(l)} &amp;= f_l(z^{(l)})\end{cases}\end{align*}\]</span></p><p><span class="math inline">\(\quad\)</span>即首先根据第<span class="math inline">\(l-1\)</span>层Neuron的活性值(Activation,就是经过<span class="math inline">\(l-1\)</span>层的激活函数激活后的值)<span class="math inline">\(a^{(l-1)}\)</span>计算出第<span class="math inline">\(l\)</span>层Neuron的净活性值<span class="math inline">\(z^{(l)}\)</span>。然后经过一个激活函数(实则就是sigmoid/ReLu等非线性变换)得到第<span class="math inline">\(l\)</span>层神经元的活性值。</p><p><span class="math inline">\(\quad\)</span>因此，我们也可以将每个神经层看作一个仿射变换(通过一个线性变换和平移/偏置)和一个非线性变换。</p><p><span class="math inline">\(\quad\)</span>我们可以将上面的公式改写成：</p><p><span class="math display">\[\begin{align*}\begin{cases}活性值版：&amp; a^{(l)}&amp;=f_l(W^{(l)} {a}^{(l-1)} + b^{(l)})\\净活性值版：&amp; z^{(l)}&amp;=W^{(l)}f_{l-1}(z^{(l-1)})+b^{(l)}\end{cases}\end{align*}\]</span></p><h2 id="解读">解读</h2><h3 id="q1nn示意图中圆圈的含义是">Q1:NN示意图中圆圈的含义是？</h3><p><span class="math inline">\(\quad\)</span>我的理解是它们象征着净输入的各个分量或者说维度。一个圆圈代表该层输入的一个维度。</p><h3 id="q2nn示意图中连线的含义是">Q2:NN示意图中连线的含义是？</h3><p><span class="math inline">\(\quad\)</span>类比<strong>多因变量对多自变量的回归</strong>，单条连线指净输入某一维度/分量到下一层输入某一维度的变换。我们用<span class="math inline">\(\overrightarrow{x} = (x_1,x_2,\cdots,x_3)\)</span>表示某一层的净输入的话，再用<span class="math inline">\(\overrightarrow{y}_{(i)},w^T_{(i)},\overrightarrow{b}_{(i)}\)</span>分别表示该层变换输出(下一层输入)的第<span class="math inline">\(i\)</span>个维度、该层变换变换的权重矩阵第<span class="math inline">\(i\)</span>行、该层变换的偏置向量的第<span class="math inline">\(i\)</span>个分量，忽略非线性变换的步骤(毕竟只是一个外壳)，则单条连线象征的变换可表示为：</p><p><span class="math display">\[\overrightarrow{y}_{(i)}=w^T_{(i)} \overrightarrow{x}+\overrightarrow{b}_{(i)}\]</span></p><p><span class="math inline">\(\quad\)</span>在一本介绍PyTorch的书中，我看到了一些有趣的观点。</p><h3 id="q3仿射变换">Q3:仿射变换</h3><p><span class="math inline">\(\quad\)</span>深度学习的核心组件之一是仿射变换，仿射变换是一个关于矩阵<span class="math inline">\(A\)</span>和向量<span class="math inline">\(x,b\)</span>的<span class="math inline">\(f(x)\)</span>函数：</p><p><span class="math display">\[f(x) = Ax+b\]</span></p><p><span class="math inline">\(\quad\)</span>在大部分书中，我们都能看到神经网络一层中的仿射变换变换被表示成了：</p><p><span class="math display">\[W^{(l)}a^{(l-1)}+b^{(l)}\]</span></p><p><span class="math inline">\(\quad\)</span>实际上，可以写的“统计学”一些：</p><p><span class="math display">\[\begin{align*}a^{(l-1)}B^{(l)}+b^{(l)}\end{align*}\]</span></p><p><span class="math inline">\(\quad\)</span>这样做的好处就是可以更好理解为什么PyTorch在定义网络时，各层维度数字是首尾相连的。</p><h3 id="q4非线性变换">Q4:非线性变换</h3><p><span class="math inline">\(\quad\)</span>首先，注意以下这个例子，它将解释为什么我们一层NN需要非线性函数。假设我们有两个仿射变换<span class="math inline">\(f(x) = Ax+b\)</span> 和<span class="math inline">\(g(x) = Cx+d\)</span>。那么<span class="math inline">\(f(g(x))\)</span> 又是什么呢？</p><p><span class="math display">\[\begin{align*}f(g(x)) &amp;= A(Cx+d)+b \\&amp;= ACx + (Ad+b)\end{align*}\]</span></p><p><span class="math inline">\(\quad AC\)</span>是一个矩阵，<span class="math inline">\(Ad+b\)</span>是一个向量，可以看出，两个仿射变换的组合还是一个仿射变换。由此可以看出，使用以上方法将多个仿射变换组合成的长链式的神经网络，相对于单个仿射变换并没有性能上的提升。但是如果我们在两个仿射变换之间引入非线性，那么结果就大不一样了，我们可以构建出一个高性能的模型。</p><p><span class="math inline">\(\quad\)</span>最常用的核心的非线性函数有：<span class="math inline">\(tanh(x),\sigma(x),ReLU(x)\)</span>。你可能会想： “为什么是这些函数？明明有其他更多的非线性函数。”这些函数常用的原因是它们拥有可以容易计算的梯度，而<strong>计算梯度是学习的本质</strong>。例如:</p><p><span class="math display">\[\frac{d\sigma}{dx} = \sigma(x)(1-\sigma(x))\]</span></p><p>虽然<span class="math inline">\(\sigma(x)\)</span>是非线性的，但是当参数的绝对值增长时，它的梯度会很快消失。而小梯度意味着很难学习。因此大部分人默认选择<span class="math inline">\(tanh\)</span>或者<span class="math inline">\(ReLU\)</span>。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Article</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Math</tag>
+      
+      <tag>DeepLearning</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
