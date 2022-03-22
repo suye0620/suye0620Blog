@@ -10,7 +10,7 @@ keywords:
 author: Ye.S
 language: zh-CN
 timezone: 'Asia/Shanghai'
-
+favicon: /img/favicon.ico
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
