@@ -7,6 +7,7 @@ categories:
 tags:
 - Math
 - DeepLearning
+- MachineLearning
 excerpt: ""
 math: true
 ---
