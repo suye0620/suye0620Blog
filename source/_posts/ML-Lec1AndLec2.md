@@ -34,6 +34,74 @@ NFL定理最重要的寓意，就是让我们清楚地认识到，脱离具体�
 
 为简单起见，假设样本空间$\mathcal{X}$和假设空间$\mathcal{H}$都是离散的。令$P(h|X,\mathfrak{L}_a)$代表学习算法$\mathfrak{L}_a$基于训练数据$X$产生假设$h$的概率(这里的$h$说白了就是由数据拟合出来的，一个模拟真实目标函数的逼近函数)，再令$f$代表我们希望学习的真实目标函数。$\mathfrak{L}_a)$的“训练集外误差”，即$\mathfrak{L}_a)$在训练集之外的所有样本上的误差(out of train set error?)为
 
+<center>
+
+<img src="/img/ML-Lec1AndLec2/eq1.png"  />
+
+</center>
+<!-- $$
+E_{ote}(\mathfrak{L}_a|X,f) = \sum_h \sum_{x \in \mathcal{X}-X} P(\textit{\textbf{x}}) II(h(\textit{\textbf{x}}) \not = f(\textit{\textbf{x}})) P(h|X,\mathfrak{L}_a),
+$$ -->
+
+其中$II(\cdot)$是指示函数，若$\cdot$为真则取值1，否则取值0。
+
+考虑二分类问题，且真实目标函数可以是任何函数$\mathcal{X} \mapsto \{0,1\}$，函数空间为$\{0,1\}^{|\mathcal{X}|}$。对所有可能的$f$按均匀分布对误差求和，有
+
+<center>
+
+<img src="/img/ML-Lec1AndLec2/eq2.png"  />
+
+</center>
+<!-- $$
+\begin{align*}
+\sum_{f} E_{ote}(\mathfrak{L}_a|X,f) 
+&= \sum_h \sum_{x \in \mathcal{X}-X} 
+P(\textit{\textbf{x}}) 
+II(h(\textit{\textbf{x}}) 
+\not = 
+f(\textit{\textbf{x}})) 
+P(h|X,\mathfrak{L}_a) \\
+&= \sum_{x \in \mathcal{X}-X}
+P(\textit{\textbf{x}}) 
+\sum_h
+P(h|X,\mathfrak{L}_a) \sum_f
+II(h(\textit{\textbf{x}}) 
+\not = 
+f(\textit{\textbf{x}}))   \quad (环，可交换次序)\\
+&= \sum_{x \in \mathcal{X}-X}
+P(\textit{\textbf{x}}) 
+\sum_h
+P(h|X,\mathfrak{L}_a) 
+\frac{1}{2}2^|\mathcal{X}| \\
+
+& \quad (h(\textit{\textbf{x}}) 
+\not = 
+f(\textit{\textbf{x}}): f有\{0,1\}^{|\mathcal{X}|}也即是2^{|\mathcal{X}|}个，结果不等的一半，也就是\frac{1}{2})\\
+
+&=\frac{1}{2}2^|\mathcal{X}|
+\sum_{x \in \mathcal{X}-X}
+P(\textit{\textbf{x}}) 
+\sum_h
+P(h|X,\mathfrak{L}_a) \\
+
+& \quad (\sum_h P(h|X,\mathfrak{L}_a)=1，所有假设概率为1)\\
+
+&=2^{|\mathcal{X}|-1}
+\sum_{x \in \mathcal{X}-X}
+P(\textit{\textbf{x}}) \cdot 1\\
+
+& \quad (没有出现a，即结果与算法\mathfrak{L}_a无关)\\
+
+
+
+\end{align*}
+$$ -->
+
+上式显示出，总误差与学习算法无关(与$II(\cdot)$无关)。即对于任意两个学习算法$\mathfrak{L}_a$和$\mathfrak{L}_b$，我们都有
+
 $$
-E_{ote}(\mathfrak{L}_a|X,f) = \sum_h \sum_{x \in \mathcal{X}-X} P(\textbf{\textit{x}}) \
+\sum_{f} E_{ote}(\mathfrak{L}_a|X,f)=
+\sum_{f} E_{ote}(\mathfrak{L}_b|X,f)
 $$
+
+也就是说，无论学习算法$\mathfrak{L}_a$多聪明、学习算法$\mathfrak{L}_b$多笨拙，它们的期望性能是相同的。
