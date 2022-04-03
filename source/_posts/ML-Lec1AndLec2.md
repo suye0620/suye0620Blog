@@ -39,9 +39,11 @@ NFL定理最重要的寓意，就是让我们清楚地认识到，脱离具体�
 <img src="/img/ML-Lec1AndLec2/eq1.png"  />
 
 </center>
-<!-- $$
+<!-- 
+$$
 E_{ote}(\mathfrak{L}_a|X,f) = \sum_h \sum_{x \in \mathcal{X}-X} P(\textit{\textbf{x}}) II(h(\textit{\textbf{x}}) \not = f(\textit{\textbf{x}})) P(h|X,\mathfrak{L}_a),
-$$ -->
+$$ 
+-->
 
 其中$II(\cdot)$是指示函数，若$\cdot$为真则取值1，否则取值0。
 
@@ -52,7 +54,9 @@ $$ -->
 <img src="/img/ML-Lec1AndLec2/eq2.png"  />
 
 </center>
-<!-- $$
+
+<!-- 
+$$
 \begin{align*}
 \sum_{f} E_{ote}(\mathfrak{L}_a|X,f) 
 &= \sum_h \sum_{x \in \mathcal{X}-X} 
@@ -92,10 +96,9 @@ P(\textit{\textbf{x}}) \cdot 1\\
 
 & \quad (没有出现a，即结果与算法\mathfrak{L}_a无关)\\
 
-
-
 \end{align*}
-$$ -->
+$$  
+-->
 
 上式显示出，总误差与学习算法无关(与$II(\cdot)$无关)。即对于任意两个学习算法$\mathfrak{L}_a$和$\mathfrak{L}_b$，我们都有
 
@@ -105,3 +108,20 @@ $$
 $$
 
 也就是说，无论学习算法$\mathfrak{L}_a$多聪明、学习算法$\mathfrak{L}_b$多笨拙，它们的期望性能是相同的。
+
+## 偏差方差分解定理
+
+关于各种评价指标、ROC曲线啥的，个人觉得根据任务选择合适的评价指标即可。所以直接跳过，记录一下第二个重点——偏差方差分解定理。
+
+<s>公式推导好长！</s>
+
+偏差-方差分解试图对学习算法的期望泛化错误率进行拆解。
+
+<center>
+
+<img src="/img/ML-Lec1AndLec2/eq3.png"  />
+<img src="/img/ML-Lec1AndLec2/eq4.png"  />
+<img src="/img/ML-Lec1AndLec2/eq5.png"  />
+<img src="/img/ML-Lec1AndLec2/eq6.png"  />
+
+</center>
