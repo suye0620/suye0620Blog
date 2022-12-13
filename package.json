@@ -21,7 +21,7 @@
     "hexo-renderer-pandoc": "^0.3.1",
     "hexo-renderer-stylus": "^0.3.1",
     "hexo-server": "^3.0.0",
-    "hexo-theme-fluid": "^1.8.14",
+    "hexo-theme-fluid": "^1.9.4",
     "hexo-theme-landscape": "^0.0.3"
   }
 }
